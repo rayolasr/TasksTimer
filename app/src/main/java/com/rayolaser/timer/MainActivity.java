@@ -1,5 +1,6 @@
 package com.rayolaser.timer;
 
+import android.content.Intent;
 import android.annotation.SuppressLint;
 import android.database.Cursor;
 import android.os.Bundle;
@@ -65,6 +66,7 @@ public class MainActivity extends AppCompatActivity {
                 startTime = System.currentTimeMillis();
                 handler.postDelayed(updateTimerThread, 0);
                 isRunning = true;
+                startService(new Intent(MainActivity.this, TimerService.class));
             }
         });
 
