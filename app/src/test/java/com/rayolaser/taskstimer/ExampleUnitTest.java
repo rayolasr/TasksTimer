@@ -1,4 +1,4 @@
-package com.rayolaser.timer;
+package com.rayolaser.taskstimer;
 
 import org.junit.Test;
 

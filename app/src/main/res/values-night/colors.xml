@@ -1,17 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <!-- Colores Primarios -->
-    <color name="primaryColor">#6200EE</color>
+    <color name="primaryColor">#BB86FC</color>
     <color name="primaryVariantColor">#3700B3</color>
-    <color name="secondaryColor">#03DAC5</color>
+    <color name="secondaryColor">#03DAC6</color>
 
     <!-- Colores de fondo y superficies -->
-    <color name="backgroundColor">#FFFFFF</color>
-    <color name="surfaceColor">#F2F2F2</color>
+    <color name="backgroundColor">#121212</color>
+    <color name="surfaceColor">#1E1E1E</color>
 
     <!-- Colores de texto -->
-    <color name="textColorPrimary">#000000</color>
-    <color name="textColorSecondary">#757575</color>
+    <color name="textColorPrimary">#FFFFFF</color>
+    <color name="textColorSecondary">#B3B3B3</color>
 
     <!-- Colores de botones -->
     <color name="buttonColor">#FF5722</color>
