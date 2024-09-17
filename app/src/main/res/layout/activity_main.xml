@@ -45,37 +45,41 @@
 
                 <Button
                     android:id="@+id/start_button"
+                    style="?android:attr/buttonBarButtonStyle"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginEnd="8dp"
-                    android:drawableLeft="@drawable/play_vector"
+                    android:drawableStart="@drawable/play_vector"
                     android:drawablePadding="8dp"
                     android:text="@string/start" />
 
                 <Button
                     android:id="@+id/pause_button"
+                    style="?android:attr/buttonBarButtonStyle"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginEnd="8dp"
-                    android:drawableLeft="@drawable/pause_vector"
+                    android:drawableStart="@drawable/pause_vector"
                     android:drawablePadding="8dp"
-                    android:text="@string/pause"/>
+                    android:text="@string/pause" />
 
                 <Button
                     android:id="@+id/reset_button"
+                    style="?android:attr/buttonBarButtonStyle"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginEnd="8dp"
-                    android:drawableLeft="@drawable/restart_vector"
+                    android:drawableStart="@drawable/restart_vector"
                     android:drawablePadding="8dp"
                     android:text="@string/reset" />
 
                 <Button
                     android:id="@+id/save_task_button"
+                    style="?android:attr/buttonBarButtonStyle"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginEnd="8dp"
-                    android:drawableLeft="@drawable/save_vector"
+                    android:drawableStart="@drawable/save_vector"
                     android:drawablePadding="8dp"
                     android:text="@string/save" />
             </LinearLayout>

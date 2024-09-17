@@ -1,4 +1,4 @@
-<resources xmlns:tools="http://schemas.android.com/tools">
+<resources>
     <style name="Theme.TaskTimerApp" parent="Theme.MaterialComponents.DayNight.NoActionBar">
         <!-- Colores primarios -->
         <item name="colorPrimary">@color/primaryColor</item>
