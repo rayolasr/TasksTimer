@@ -13,9 +13,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.app.AppCompatDelegate;
-
-import com.rayolaser.timer.R;
-
 import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity {

@@ -1,5 +1,5 @@
 <resources>
-    <style name="Theme.TaskTimerApp" parent="Theme.MaterialComponents.DayNight.DarkActionBar">
+    <style name="Theme.TaskTimerApp" parent="Theme.AppCompat.DayNight.DarkActionBar">
         <!-- Colores primarios -->
         <item name="colorPrimary">@color/primaryColor</item>
         <item name="colorPrimaryVariant">@color/primaryVariantColor</item>
