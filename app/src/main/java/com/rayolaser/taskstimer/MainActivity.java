@@ -78,6 +78,9 @@ public class MainActivity extends AppCompatActivity {
                 handler.removeCallbacks(updateTimerThread);
                 isRunning = false;
             }
+            Intent pauseIntent = new Intent(MainActivity.this, TimerService.class);
+            pauseIntent.setAction("PAUSE");
+            startService(pauseIntent);
         });
 
         resetButton.setOnClickListener(v -> {

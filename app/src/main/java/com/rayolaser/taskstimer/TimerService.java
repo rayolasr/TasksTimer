@@ -62,6 +62,11 @@ public class TimerService extends Service {
             handler.post(updateTimer);
             isRunning = true;
         }
+
+        // Detener el servicio si se recibe una intención de pausar
+        if (intent != null && "PAUSE".equals(intent.getAction())) {
+            stopSelf();
+        }
         return START_STICKY;
     }
 
@@ -70,6 +75,12 @@ public class TimerService extends Service {
         super.onDestroy();
         handler.removeCallbacks(updateTimer);
         isRunning = false;
+
+        // Eliminar la notificación cuando el servicio se detiene
+        NotificationManager manager = getSystemService(NotificationManager.class);
+        if (manager != null) {
+            manager.cancel(1); // Cancela la notificación con ID 1
+        }
     }
 
     @Override
