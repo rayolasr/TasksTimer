@@ -11,6 +11,7 @@ import android.os.IBinder;
 import android.os.SystemClock;
 import android.util.Log;
 import androidx.core.app.NotificationCompat;
+import android.app.PendingIntent;
 
 
 public class TimerService extends Service {
@@ -33,6 +34,14 @@ public class TimerService extends Service {
 
     @Override
     public void onCreate() {
+
+        // Intent para abrir MainActivity al tocar la notificación
+        Intent notificationIntent = new Intent(this, MainActivity.class);
+        notificationIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        PendingIntent pendingIntent = PendingIntent.getActivity(
+                this, 0, notificationIntent, PendingIntent.FLAG_IMMUTABLE
+        );
+
         super.onCreate();
         createNotificationChannel();
         Notification notification = new NotificationCompat.Builder(this, CHANNEL_ID)
@@ -40,6 +49,7 @@ public class TimerService extends Service {
                 .setContentText("The timer is running in the background.")
                 .setSmallIcon(R.drawable.timer_vector)
                 .setPriority(NotificationCompat.PRIORITY_LOW) // Prioridad baja para no molestar
+                .setContentIntent(pendingIntent) // Añade el PendingIntent aquí
                 .build();
         startForeground(1, notification);
         Log.d("TimerService", "Foreground service started with notification.");
