@@ -98,16 +98,6 @@ public class MainActivity extends AppCompatActivity {
                 Toast.makeText(MainActivity.this, "Please enter a task name", Toast.LENGTH_SHORT).show();
             }
         });
-        saveButton.setOnClickListener(v -> {
-            String taskName = taskNameEditText.getText().toString();
-            if (!taskName.isEmpty()) {
-                dbHelper.saveTask(taskName, updateTime);
-                Toast.makeText(MainActivity.this, "Task saved", Toast.LENGTH_SHORT).show();
-                loadTasks();
-            } else {
-                Toast.makeText(MainActivity.this, "Please enter a task name", Toast.LENGTH_SHORT).show();
-            }
-        });
     }
 
     private void loadTasks() {
