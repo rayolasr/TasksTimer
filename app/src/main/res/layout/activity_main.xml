@@ -14,7 +14,7 @@
 
         <EditText
             android:id="@+id/task_name"
-            android:layout_width="325dp"
+            android:layout_width="match_parent"
             android:layout_height="59dp"
             android:layout_gravity="center"
             android:autofillHints="task name"
