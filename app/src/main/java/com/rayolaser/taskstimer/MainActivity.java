@@ -1,10 +1,16 @@
 package com.rayolaser.taskstimer;
 
+import android.app.ActivityManager;
+import android.content.ComponentName;
+import android.content.Context;
 import android.content.Intent;
 import android.annotation.SuppressLint;
+import android.content.ServiceConnection;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.IBinder;
+import android.util.Log;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
@@ -21,26 +27,56 @@ public class MainActivity extends AppCompatActivity {
     private EditText taskNameEditText;
     private ListView taskListView;
     private final Handler handler = new Handler();
-    private long startTime = 0L;
-    private long timeInMilliseconds = 0L;
-    private long timeSwapBuff = 0L;
     private long updateTime = 0L;
     private boolean isRunning = false;
     private TaskDatabaseHelper dbHelper;
+    private TimerService timerService;
+    private boolean isBound = false;
 
     private final Runnable updateTimerThread = new Runnable() {
         @Override
         public void run() {
-            if (isRunning) {
-                timeInMilliseconds = System.currentTimeMillis() - startTime;
-                updateTime = timeSwapBuff + timeInMilliseconds;
+            if (isRunning && isBound && timerService != null) {
+                updateTime = timerService.getElapsedTime();
                 int secs = (int) (updateTime / 1000);
                 int mins = secs / 60;
                 int hours = mins / 60;
                 secs = secs % 60;
+                //Log.d("TimerService", "Elapsed Time: " + updateTime);
                 timerTextView.setText(String.format("%02d:%02d:%02d", hours, mins, secs));
-                handler.postDelayed(this, 0);
+                handler.postDelayed(this, 1000);
             }
+        }
+    };
+
+    private final ServiceConnection serviceConnection = new ServiceConnection() {
+        @Override
+        public void onServiceConnected(ComponentName className, IBinder service) {
+            Log.d("MainActivity", "Service Connected");
+            // Vinculación exitosa, accedemos al servicio
+            TimerService.LocalBinder binder = (TimerService.LocalBinder) service;
+            timerService = binder.getService();
+            isBound = true;
+            handler.post(updateTimerThread);
+
+            // Actualiza la UI con el tiempo transcurrido del servicio
+            updateTime = timerService.getElapsedTime();
+            int secs = (int) (updateTime / 1000);
+            int mins = secs / 60;
+            int hours = mins / 60;
+            secs = secs % 60;
+            //Log.d("MainActivity", "Elapsed Time: " + updateTime);
+            timerTextView.setText(String.format("%02d:%02d:%02d", hours, mins, secs));
+
+            if (timerService.getIsRunning()) {
+                isRunning = true;
+                handler.post(updateTimerThread);// Empezamos a actualizar la interfaz con el tiempo del servicio
+            }
+        }
+
+        @Override
+        public void onServiceDisconnected(ComponentName arg0) {
+            isBound = false;
         }
     };
 
@@ -50,6 +86,17 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
         setContentView(R.layout.activity_main);
+
+        // Verificar si el servicio ya está corriendo
+        if (!isServiceRunning()) {
+            // Inicia el servicio si no está corriendo
+            Intent serviceIntent = new Intent(this, TimerService.class);
+            startService(serviceIntent);
+        }
+
+        // Vincular siempre el servicio
+        Intent intent = new Intent(this, TimerService.class);
+        bindService(intent, serviceConnection, Context.BIND_AUTO_CREATE);
 
         dbHelper = new TaskDatabaseHelper(this);
 
@@ -64,32 +111,24 @@ public class MainActivity extends AppCompatActivity {
         loadTasks();
 
         startButton.setOnClickListener(v -> {
-            if (!isRunning) {
-                startTime = System.currentTimeMillis();
-                handler.postDelayed(updateTimerThread, 0);
+            Log.d("MainActivity", "Starting timer...");
+            Log.d("MainActivity", "isBound: " + isBound);
+            Log.d("MainActivity", "timerService: " + timerService);
+            if (isBound && timerService != null) {
                 isRunning = true;
-                startService(new Intent(MainActivity.this, TimerService.class));
+                timerService.startTimer();
+                handler.post(updateTimerThread);
             }
         });
 
         pauseButton.setOnClickListener(v -> {
-            if (isRunning) {
-                timeSwapBuff += timeInMilliseconds;
-                handler.removeCallbacks(updateTimerThread);
-                isRunning = false;
-            }
-            Intent pauseIntent = new Intent(MainActivity.this, TimerService.class);
-            pauseIntent.setAction("PAUSE");
-            startService(pauseIntent);
+            timerService.pauseTimer();
+            isRunning = false;
         });
 
         resetButton.setOnClickListener(v -> {
-            startTime = 0L;
-            timeSwapBuff = 0L;
-            timeInMilliseconds = 0L;
-            timerTextView.setText("00:00:00");
+            timerService.startTimer();
             isRunning = false;
-            handler.removeCallbacks(updateTimerThread);
         });
 
         saveButton.setOnClickListener(v -> {
@@ -127,5 +166,25 @@ public class MainActivity extends AppCompatActivity {
         int hours = mins / 60;
         secs = secs % 60;
         return String.format("%02d:%02d:%02d", hours, mins, secs);
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        // Desvincular el servicio cuando la actividad se destruya
+        if (isBound) {
+            unbindService(serviceConnection);
+            isBound = false;
+        }
+    }
+
+    private boolean isServiceRunning() {
+        ActivityManager manager = (ActivityManager) getSystemService(Context.ACTIVITY_SERVICE);
+        for (ActivityManager.RunningServiceInfo service : manager.getRunningServices(Integer.MAX_VALUE)) {
+            if (TimerService.class.getName().equals(service.service.getClassName())) {
+                return true;
+            }
+        }
+        return false;
     }
 }

@@ -5,6 +5,7 @@ import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.Service;
 import android.content.Intent;
+import android.os.Binder;
 import android.os.Build;
 import android.os.Handler;
 import android.os.IBinder;
@@ -17,23 +18,29 @@ import android.app.PendingIntent;
 public class TimerService extends Service {
 
     private final Handler handler = new Handler();
-    private long startTime;
     private boolean isRunning = false;
     private static final String CHANNEL_ID = "TimerServiceChannel";
+    private long startTime = 0L;
+    private long timeInMilliseconds = 0L;
+    private long updateTime = 0L;
+    private long timeSwapBuff = 0L;
+    private long elapsedTime = 0L;
 
     private final Runnable updateTimer = new Runnable() {
         @Override
         public void run() {
             if (isRunning) {
-                long elapsedTime = SystemClock.elapsedRealtime() - startTime;
+                elapsedTime = System.currentTimeMillis() - startTime;
+                //updateTime = timeSwapBuff + timeInMilliseconds;
+                Log.d("TimerService", "Elapsed Time: " + elapsedTime);
                 handler.postDelayed(this, 1000);
-                Log.d("TimerService", "Elapsed time: " + elapsedTime);
             }
         }
     };
 
     @Override
     public void onCreate() {
+        Log.d("TimerService", "Service created.");
 
         // Intent para abrir MainActivity al tocar la notificación
         Intent notificationIntent = new Intent(this, MainActivity.class);
@@ -57,16 +64,6 @@ public class TimerService extends Service {
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-        if (!isRunning) {
-            startTime = SystemClock.elapsedRealtime();
-            handler.post(updateTimer);
-            isRunning = true;
-        }
-
-        // Detener el servicio si se recibe una intención de pausar
-        if (intent != null && "PAUSE".equals(intent.getAction())) {
-            stopSelf();
-        }
         return START_STICKY;
     }
 
@@ -85,7 +82,13 @@ public class TimerService extends Service {
 
     @Override
     public IBinder onBind(Intent intent) {
-        return null;
+        return new LocalBinder();
+    }
+
+    public class LocalBinder extends Binder {
+        public TimerService getService() {
+            return TimerService.this;
+        }
     }
 
     private void createNotificationChannel() {
@@ -105,5 +108,37 @@ public class TimerService extends Service {
                 Log.e("TimerService", "NotificationManager is null.");
             }
         }
+    }
+
+    public void startTimer() {
+        if (!isRunning) {
+            startTime = SystemClock.elapsedRealtime();  // Cambiado a elapsedRealtime
+            isRunning = true;
+            handler.post(updateTimer);
+        }
+    }
+
+    public long getElapsedTime() {
+        if (isRunning) {
+            elapsedTime = SystemClock.elapsedRealtime() - startTime;  // Más preciso
+        }
+        return elapsedTime;
+    }
+
+    public void pauseTimer(){
+        isRunning = false;
+        handler.removeCallbacks(updateTimer);
+    }
+
+    public void resetTimer(){
+        isRunning = false;
+        handler.removeCallbacks(updateTimer);
+        startTime = 0L;
+        timeInMilliseconds = 0L;
+        updateTime = 0L;
+    }
+
+    public boolean getIsRunning(){
+        return isRunning;
     }
 }
