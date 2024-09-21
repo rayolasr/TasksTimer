@@ -3,6 +3,7 @@ package com.rayolaser.taskstimer;
 import android.app.Notification;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Intent;
 import android.os.Binder;
@@ -11,15 +12,15 @@ import android.os.Handler;
 import android.os.IBinder;
 import android.os.SystemClock;
 import android.util.Log;
+
 import androidx.core.app.NotificationCompat;
-import android.app.PendingIntent;
 
 
 public class TimerService extends Service {
 
+    private static final String CHANNEL_ID = "TimerServiceChannel";
     private final Handler handler = new Handler();
     private boolean isRunning = false;
-    private static final String CHANNEL_ID = "TimerServiceChannel";
     private long startTime = 0L;
     private long timeInMilliseconds = 0L;
     private long updateTime = 0L;
@@ -85,12 +86,6 @@ public class TimerService extends Service {
         return new LocalBinder();
     }
 
-    public class LocalBinder extends Binder {
-        public TimerService getService() {
-            return TimerService.this;
-        }
-    }
-
     private void createNotificationChannel() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             NotificationChannel serviceChannel = new NotificationChannel(
@@ -140,5 +135,11 @@ public class TimerService extends Service {
 
     public boolean getIsRunning(){
         return isRunning;
+    }
+
+    public class LocalBinder extends Binder {
+        public TimerService getService() {
+            return TimerService.this;
+        }
     }
 }
