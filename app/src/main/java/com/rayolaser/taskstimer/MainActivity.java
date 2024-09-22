@@ -1,6 +1,5 @@
 package com.rayolaser.taskstimer;
 
-import android.annotation.SuppressLint;
 import android.app.ActivityManager;
 import android.content.ComponentName;
 import android.content.Context;
@@ -22,6 +21,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.app.AppCompatDelegate;
 
 import java.util.ArrayList;
+import java.util.Locale;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -45,7 +45,7 @@ public class MainActivity extends AppCompatActivity {
                 int hours = mins / 60;
                 secs = secs % 60;
                 //Log.d("TimerService", "Elapsed Time: " + updateTime);
-                timerTextView.setText(String.format("%02d:%02d:%02d", hours, mins, secs));
+                timerTextView.setText(String.format(Locale.US, "%02d:%02d:%02d", hours, mins, secs));
                 handler.postDelayed(this, 1000);
             }
         }
@@ -68,7 +68,7 @@ public class MainActivity extends AppCompatActivity {
             int hours = mins / 60;
             secs = secs % 60;
             //Log.d("MainActivity", "Elapsed Time: " + updateTime);
-            timerTextView.setText(String.format("%02d:%02d:%02d", hours, mins, secs));
+            timerTextView.setText(String.format(Locale.US, "%02d:%02d:%02d", hours, mins, secs));
 
             if (timerService.getIsRunning()) {
                 isRunning = true;
@@ -82,7 +82,7 @@ public class MainActivity extends AppCompatActivity {
         }
     };
 
-    @SuppressLint("SetTextI18n")
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -131,7 +131,7 @@ public class MainActivity extends AppCompatActivity {
         resetButton.setOnClickListener(v -> {
             timerService.resetTimer();
             isRunning = false;
-            timerTextView.setText("00:00:00");
+            timerTextView.setText(R.string._00_00_00);
         });
 
         saveButton.setOnClickListener(v -> {
@@ -162,13 +162,12 @@ public class MainActivity extends AppCompatActivity {
         taskListView.setAdapter(adapter);
     }
 
-    @SuppressLint("DefaultLocale")
     private String formatTime(long timeInMillis) {
         int secs = (int) (timeInMillis / 1000);
         int mins = secs / 60;
         int hours = mins / 60;
         secs = secs % 60;
-        return String.format("%02d:%02d:%02d", hours, mins, secs);
+        return String.format(Locale.US, "%02d:%02d:%02d", hours, mins, secs);
     }
 
     @Override
