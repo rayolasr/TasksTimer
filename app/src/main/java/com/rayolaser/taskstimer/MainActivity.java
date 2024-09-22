@@ -22,6 +22,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.app.AppCompatDelegate;
 
 import java.util.ArrayList;
+import java.util.Locale;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -45,7 +46,7 @@ public class MainActivity extends AppCompatActivity {
                 int hours = mins / 60;
                 secs = secs % 60;
                 //Log.d("TimerService", "Elapsed Time: " + updateTime);
-                timerTextView.setText(String.format("%02d:%02d:%02d", hours, mins, secs));
+                timerTextView.setText(String.format(Locale.US, "%02d:%02d:%02d", hours, mins, secs));
                 handler.postDelayed(this, 1000);
             }
         }
@@ -68,7 +69,7 @@ public class MainActivity extends AppCompatActivity {
             int hours = mins / 60;
             secs = secs % 60;
             //Log.d("MainActivity", "Elapsed Time: " + updateTime);
-            timerTextView.setText(String.format("%02d:%02d:%02d", hours, mins, secs));
+            timerTextView.setText(String.format(Locale.US, "%02d:%02d:%02d", hours, mins, secs));
 
             if (timerService.getIsRunning()) {
                 isRunning = true;
