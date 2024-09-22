@@ -129,8 +129,9 @@ public class MainActivity extends AppCompatActivity {
         });
 
         resetButton.setOnClickListener(v -> {
-            timerService.startTimer();
+            timerService.resetTimer();
             isRunning = false;
+            timerTextView.setText("00:00:00");
         });
 
         saveButton.setOnClickListener(v -> {

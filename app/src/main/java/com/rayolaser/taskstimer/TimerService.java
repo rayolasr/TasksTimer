@@ -22,9 +22,6 @@ public class TimerService extends Service {
     private final Handler handler = new Handler();
     private boolean isRunning = false;
     private long startTime = 0L;
-    private long timeInMilliseconds = 0L;
-    private long updateTime = 0L;
-    private long timeSwapBuff = 0L;
     private long elapsedTime = 0L;
 
     private final Runnable updateTimer = new Runnable() {
@@ -129,8 +126,7 @@ public class TimerService extends Service {
         isRunning = false;
         handler.removeCallbacks(updateTimer);
         startTime = 0L;
-        timeInMilliseconds = 0L;
-        updateTime = 0L;
+        elapsedTime = 0L;
     }
 
     public boolean getIsRunning(){
