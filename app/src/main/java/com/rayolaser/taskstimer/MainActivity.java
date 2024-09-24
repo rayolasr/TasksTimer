@@ -103,26 +103,35 @@ public class MainActivity extends AppCompatActivity {
 
         timerTextView = findViewById(R.id.timer);
         taskNameEditText = findViewById(R.id.task_name);
-        Button startButton = findViewById(R.id.start_button);
-        Button pauseButton = findViewById(R.id.pause_button);
-        Button resetButton = findViewById(R.id.reset_button);
-        Button saveButton = findViewById(R.id.save_task_button);
+        Button superButton = findViewById(R.id.super_button);
         taskListView = findViewById(R.id.task_list_view);
 
         loadTasks();
 
-        startButton.setOnClickListener(v -> {
+        superButton.setOnClickListener(v -> {
             Log.d("MainActivity", "Starting timer...");
             Log.d("MainActivity", "isBound: " + isBound);
             Log.d("MainActivity", "timerService: " + timerService);
-            if (isBound && timerService != null) {
+            if (!isRunning && isBound && timerService != null) {
                 isRunning = true;
                 timerService.startTimer();
                 handler.post(updateTimerThread);
+            } else if (isRunning && isBound) {
+                String taskName = taskNameEditText.getText().toString();
+                if (!taskName.isEmpty()) {
+                    dbHelper.saveTask(taskName, updateTime);
+                    loadTasks();
+                    isRunning = false;
+                    timerService.resetTimer();
+                    timerTextView.setText(R.string._00_00_00);
+                    Toast.makeText(MainActivity.this, "Task saved", Toast.LENGTH_SHORT).show();
+                } else {
+                    Toast.makeText(MainActivity.this, "Please enter a task name", Toast.LENGTH_SHORT).show();
+                }
             }
         });
 
-        pauseButton.setOnClickListener(v -> {
+/*        pauseButton.setOnClickListener(v -> {
             timerService.pauseTimer();
             isRunning = false;
         });
@@ -145,7 +154,7 @@ public class MainActivity extends AppCompatActivity {
             } else {
                 Toast.makeText(MainActivity.this, "Please enter a task name", Toast.LENGTH_SHORT).show();
             }
-        });
+        });*/
     }
 
     private void loadTasks() {

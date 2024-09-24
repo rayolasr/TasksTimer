@@ -31,59 +31,16 @@
         android:textSize="30sp"
         android:layout_gravity="center_horizontal" />
 
-        <HorizontalScrollView
-            android:layout_width="match_parent"
-            android:layout_height="66dp"
-            android:fadeScrollbars="false">
-
-            <LinearLayout
-                style="?android:attr/buttonBarStyle"
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:gravity="center"
-                android:orientation="horizontal">
-
-                <Button
-                    android:id="@+id/start_button"
-                    style="?android:attr/buttonBarButtonStyle"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginEnd="8dp"
-                    android:drawableStart="@drawable/play_vector"
-                    android:drawablePadding="8dp"
-                    android:text="@string/start" />
-
-                <Button
-                    android:id="@+id/pause_button"
-                    style="?android:attr/buttonBarButtonStyle"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginEnd="8dp"
-                    android:drawableStart="@drawable/pause_vector"
-                    android:drawablePadding="8dp"
-                    android:text="@string/pause" />
-
-                <Button
-                    android:id="@+id/reset_button"
-                    style="?android:attr/buttonBarButtonStyle"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginEnd="8dp"
-                    android:drawableStart="@drawable/restart_vector"
-                    android:drawablePadding="8dp"
-                    android:text="@string/reset" />
-
-                <Button
-                    android:id="@+id/save_task_button"
-                    style="?android:attr/buttonBarButtonStyle"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginEnd="8dp"
-                    android:drawableStart="@drawable/save_vector"
-                    android:drawablePadding="8dp"
-                    android:text="@string/save" />
-            </LinearLayout>
-        </HorizontalScrollView>
+        <Button
+            android:id="@+id/super_button"
+            style="?android:attr/buttonBarButtonStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginEnd="8dp"
+            android:drawableStart="@drawable/play_vector"
+            android:drawablePadding="8dp"
+            android:text="@string/start" />
 
         <ListView
             android:id="@+id/task_list_view"
