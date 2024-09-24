@@ -21,7 +21,10 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.app.AppCompatDelegate;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Locale;
+
+import Entities.Task;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -107,6 +110,7 @@ public class MainActivity extends AppCompatActivity {
         Button pauseButton = findViewById(R.id.pause_button);
         Button resetButton = findViewById(R.id.reset_button);
         Button saveButton = findViewById(R.id.save_task_button);
+        Button deleteButton = findViewById(R.id.delete_button);
         taskListView = findViewById(R.id.task_list_view);
 
         loadTasks();
@@ -146,22 +150,47 @@ public class MainActivity extends AppCompatActivity {
                 Toast.makeText(MainActivity.this, "Please enter a task name", Toast.LENGTH_SHORT).show();
             }
         });
+
+        deleteButton.setOnClickListener(v -> {
+            int position = taskListView.getSelectedItemPosition();
+            if (position >= 0) {
+                String selectedTask = (String) taskListView.getItemAtPosition(position);
+                dbHelper.deleteTask(selectedTask);
+                loadTasks(); // Recargar la lista de tareas después de la eliminación
+                Toast.makeText(this, "Tarea eliminada", Toast.LENGTH_SHORT).show();
+            } else {
+                Toast.makeText(this, "Selecciona una tarea para eliminar", Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
     private void loadTasks() {
-        ArrayList<String> taskList = new ArrayList<>();
+        List<Task> taskList = new ArrayList<>();
         Cursor cursor = dbHelper.getTasks();
 
-        if (cursor.moveToFirst()) {
-            do {
-                String taskName = cursor.getString(cursor.getColumnIndexOrThrow("task_name"));
-                long time = cursor.getLong(cursor.getColumnIndexOrThrow("time"));
-                taskList.add(taskName + ": " + formatTime(time));
-            } while (cursor.moveToNext());
+        while (cursor.moveToNext()) {
+            int idTaskIndex = cursor.getColumnIndex("id_task");
+            int taskNameIndex = cursor.getColumnIndex("task_name");
+            int timeIndex = cursor.getColumnIndex("id_task");
+            int idTask = 0;
+            String taskName = "Empty";
+            long time = 0;
+            if (idTaskIndex != -1) {
+                idTask = cursor.getInt(idTaskIndex);
+            }// Asegúrate de que tu cursor tenga la columna
+            if (taskNameIndex != -1) {
+                taskName = cursor.getString(taskNameIndex);
+            }
+            if (taskNameIndex != -1) {
+                time = cursor.getLong(timeIndex);
+            }
+
+            Task task = new Task(idTask, taskName, time);
+            taskList.add(task);
         }
         cursor.close();
 
-        ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, taskList);
+        TaskAdapter adapter = new TaskAdapter(this, taskList);
         taskListView.setAdapter(adapter);
     }
 
