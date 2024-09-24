@@ -137,6 +137,7 @@ public class MainActivity extends AppCompatActivity {
             String taskName = taskNameEditText.getText().toString();
             if (!taskName.isEmpty()) {
                 dbHelper.saveTask(taskName, updateTime);
+                loadTasks();
                 isRunning = false;
                 timerService.resetTimer();
                 timerTextView.setText(R.string._00_00_00);
