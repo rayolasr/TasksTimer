@@ -134,19 +134,17 @@ public class MainActivity extends AppCompatActivity {
         });
 
         saveButton.setOnClickListener(v -> {
-            isRunning = false;
-
             String taskName = taskNameEditText.getText().toString();
             if (!taskName.isEmpty()) {
                 dbHelper.saveTask(taskName, updateTime);
+                isRunning = false;
+                timerService.resetTimer();
+                timerTextView.setText(R.string._00_00_00);
                 Toast.makeText(MainActivity.this, "Task saved", Toast.LENGTH_SHORT).show();
             } else {
                 Toast.makeText(MainActivity.this, "Please enter a task name", Toast.LENGTH_SHORT).show();
             }
         });
-
-            timerService.resetTimer();
-            timerTextView.setText(R.string._00_00_00);
     }
 
     private void loadTasks() {
