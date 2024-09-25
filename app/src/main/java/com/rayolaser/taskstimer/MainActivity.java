@@ -10,12 +10,13 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
 import android.util.Log;
-import android.widget.ArrayAdapter;
+import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.widget.AdapterView;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.app.AppCompatDelegate;
@@ -151,15 +152,16 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        deleteButton.setOnClickListener(v -> {
-            int position = taskListView.getSelectedItemPosition();
-            if (position >= 0) {
-                String selectedTask = (String) taskListView.getItemAtPosition(position);
-                dbHelper.deleteTask(selectedTask);
-                loadTasks(); // Recargar la lista de tareas después de la eliminación
-                Toast.makeText(this, "Tarea eliminada", Toast.LENGTH_SHORT).show();
-            } else {
-                Toast.makeText(this, "Selecciona una tarea para eliminar", Toast.LENGTH_SHORT).show();
+        taskListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                Task selectedTask = (Task) parent.getItemAtPosition(position);
+                int idTaskToDelete = selectedTask.getIdTask();
+
+                // Llamar al método para eliminar la tarea
+                dbHelper.deleteTask(String.valueOf(idTaskToDelete));
+                loadTasks(); // Recargar la lista
             }
         });
     }
