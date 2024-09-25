@@ -1,12 +1,10 @@
 package com.rayolaser.taskstimer;
 
 import android.app.ActivityManager;
-import android.app.AlertDialog;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
-import android.database.Cursor;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
@@ -20,23 +18,19 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.app.AppCompatDelegate;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Locale;
-
-import Entities.Task;
 
 public class MainActivity extends AppCompatActivity {
 
     private final Handler handler = new Handler();
     private TextView timerTextView;
     private EditText taskNameEditText;
-    private ListView taskListView;
     private long updateTime = 0L;
     private boolean isRunning = false;
     private TaskDatabaseHelper dbHelper;
     private TimerService timerService;
     private boolean isBound = false;
+    private TasksManager tasksManager;
 
     private final Runnable updateTimerThread = new Runnable() {
         @Override
@@ -110,9 +104,10 @@ public class MainActivity extends AppCompatActivity {
         Button pauseButton = findViewById(R.id.pause_button);
         Button resetButton = findViewById(R.id.reset_button);
         Button saveButton = findViewById(R.id.save_task_button);
-        taskListView = findViewById(R.id.task_list_view);
+        ListView taskListView = findViewById(R.id.task_list_view);
+        tasksManager = new TasksManager(this, taskListView);
 
-        loadTasks();
+        tasksManager.loadTasks();
 
         startButton.setOnClickListener(v -> {
             Log.d("MainActivity", "Starting timer...");
@@ -140,7 +135,7 @@ public class MainActivity extends AppCompatActivity {
             String taskName = taskNameEditText.getText().toString();
             if (!taskName.isEmpty()) {
                 dbHelper.saveTask(taskName, updateTime);
-                loadTasks();
+                tasksManager.loadTasks();
                 isRunning = false;
                 timerService.resetTimer();
                 timerTextView.setText(R.string._00_00_00);
@@ -149,56 +144,6 @@ public class MainActivity extends AppCompatActivity {
                 Toast.makeText(MainActivity.this, "Please enter a task name", Toast.LENGTH_SHORT).show();
             }
         });
-
-        taskListView.setOnItemClickListener((parent, view, position, id) -> {
-            Task selectedTask = (Task) parent.getItemAtPosition(position);
-            int idTaskToDelete = selectedTask.getIdTask();
-
-            new AlertDialog.Builder(MainActivity.this)
-                    .setTitle("Eliminar tarea")
-                    .setMessage("¿Estás seguro de que deseas eliminar esta tarea?")
-                    .setPositiveButton("Sí", (dialog, which) -> {
-                        // Si el usuario confirma, elimina la tarea
-                        dbHelper.deleteTask(String.valueOf(idTaskToDelete));
-                        loadTasks(); // Recarga la lista de tareas
-                        Toast.makeText(MainActivity.this, "Tarea eliminada", Toast.LENGTH_SHORT).show();
-                    })
-                    .setNegativeButton("No", (dialog, which) -> {
-                        // Cierra el diálogo si el usuario cancela
-                        dialog.dismiss();
-                    })
-                    .show(); // Asegúrate de llamar a show() para mostrar el diálogo
-        });
-    }
-
-    private void loadTasks() {
-        List<Task> taskList = new ArrayList<>();
-        Cursor cursor = dbHelper.getTasks();
-
-        while (cursor.moveToNext()) {
-            int idTaskIndex = cursor.getColumnIndex("id_task");
-            int taskNameIndex = cursor.getColumnIndex("task_name");
-            int timeIndex = cursor.getColumnIndex("id_task");
-            int idTask = 0;
-            String taskName = "Empty";
-            long time = 0;
-            if (idTaskIndex != -1) {
-                idTask = cursor.getInt(idTaskIndex);
-            }// Asegúrate de que tu cursor tenga la columna
-            if (taskNameIndex != -1) {
-                taskName = cursor.getString(taskNameIndex);
-            }
-            if (taskNameIndex != -1) {
-                time = cursor.getLong(timeIndex);
-            }
-
-            Task task = new Task(idTask, taskName, time);
-            taskList.add(task);
-        }
-        cursor.close();
-
-        TaskAdapter adapter = new TaskAdapter(this, taskList);
-        taskListView.setAdapter(adapter);
     }
 
     @Override
