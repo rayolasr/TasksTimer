@@ -11,12 +11,12 @@ import java.util.List;
 
 import Entities.Task;
 
-public class TasksManager {
+public class TasksListManager {
     private final TaskDatabaseHelper dbHelper;
     private final ListView taskListView;
     private final Context context;
 
-    public TasksManager(Context context, ListView taskListView) {
+    public TasksListManager(Context context, ListView taskListView) {
         dbHelper = new TaskDatabaseHelper(context);
         this.taskListView = taskListView;
         this.context = context;
