@@ -63,5 +63,11 @@ public class TaskDatabaseHelper extends SQLiteOpenHelper {
         SQLiteDatabase db = this.getReadableDatabase();
         return db.rawQuery("SELECT * FROM " + TABLE_NAME + " ORDER BY " + COLUMN_ID + " DESC", null); // Ordenar por antigüedad
     }
+
+    public void deleteTask(String taskId) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        db.delete(TABLE_NAME, COLUMN_ID + " = ?", new String[]{taskId});
+        db.close();
+    }
 }
 
