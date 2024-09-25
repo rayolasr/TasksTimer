@@ -10,13 +10,11 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
 import android.util.Log;
-import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
-import android.widget.AdapterView;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.app.AppCompatDelegate;
@@ -111,7 +109,6 @@ public class MainActivity extends AppCompatActivity {
         Button pauseButton = findViewById(R.id.pause_button);
         Button resetButton = findViewById(R.id.reset_button);
         Button saveButton = findViewById(R.id.save_task_button);
-        Button deleteButton = findViewById(R.id.delete_button);
         taskListView = findViewById(R.id.task_list_view);
 
         loadTasks();
@@ -152,17 +149,13 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        taskListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        taskListView.setOnItemClickListener((parent, view, position, id) -> {
+            Task selectedTask = (Task) parent.getItemAtPosition(position);
+            int idTaskToDelete = selectedTask.getIdTask();
 
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Task selectedTask = (Task) parent.getItemAtPosition(position);
-                int idTaskToDelete = selectedTask.getIdTask();
-
-                // Llamar al método para eliminar la tarea
-                dbHelper.deleteTask(String.valueOf(idTaskToDelete));
-                loadTasks(); // Recargar la lista
-            }
+            // Llamar al método para eliminar la tarea
+            dbHelper.deleteTask(String.valueOf(idTaskToDelete));
+            loadTasks(); // Recargar la lista
         });
     }
 
@@ -194,14 +187,6 @@ public class MainActivity extends AppCompatActivity {
 
         TaskAdapter adapter = new TaskAdapter(this, taskList);
         taskListView.setAdapter(adapter);
-    }
-
-    private String formatTime(long timeInMillis) {
-        int secs = (int) (timeInMillis / 1000);
-        int mins = secs / 60;
-        int hours = mins / 60;
-        secs = secs % 60;
-        return String.format(Locale.US, "%02d:%02d:%02d", hours, mins, secs);
     }
 
     @Override
