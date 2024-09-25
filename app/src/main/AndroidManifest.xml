@@ -26,6 +26,8 @@
             </intent-filter>
 
         </activity>
+        <service android:name="com.rayolaser.taskstimer.TimerNotificationService"
+            android:exported="false"/>
 
     </application>
 

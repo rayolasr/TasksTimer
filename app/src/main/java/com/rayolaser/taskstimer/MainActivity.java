@@ -1,5 +1,11 @@
 package com.rayolaser.taskstimer;
 
+import android.app.ActivityManager;
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
+import android.content.Context;
+import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
@@ -11,6 +17,7 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.app.AppCompatDelegate;
+import androidx.core.content.ContextCompat;
 
 import java.util.Locale;
 
@@ -42,6 +49,9 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        createNotificationChannel();
+
         AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
         setContentView(R.layout.activity_main);
 
@@ -61,9 +71,17 @@ public class MainActivity extends AppCompatActivity {
 
         tasksManager.loadTasks();
 
+        // Verificar si el servicio de notificación está corriendo
+        if (!isServiceRunning()) {
+            // Iniciar el servicio si no está corriendo
+            Intent serviceIntent = new Intent(this, TimerNotificationService.class);
+            startService(serviceIntent);
+        }
+
         startButton.setOnClickListener(v -> {
             Log.d("MainActivity", "Starting timer...");
             timerManager.start();
+            startTimerNotification();
         });
 
         pauseButton.setOnClickListener(v -> timerManager.pause());
@@ -71,6 +89,7 @@ public class MainActivity extends AppCompatActivity {
         resetButton.setOnClickListener(v -> {
             timerManager.reset();
             timerTextView.setText(R.string._00_00_00);
+            stopTimerNotification();
         });
 
         saveButton.setOnClickListener(v -> {
@@ -84,6 +103,41 @@ public class MainActivity extends AppCompatActivity {
             } else {
                 Toast.makeText(MainActivity.this, "Please enter a task name", Toast.LENGTH_SHORT).show();
             }
+            stopTimerNotification();
         });
+    }
+
+    private void startTimerNotification() {
+        Intent serviceIntent = new Intent(this, TimerNotificationService.class);
+        ContextCompat.startForegroundService(this, serviceIntent);
+    }
+
+    private void stopTimerNotification() {
+        Intent serviceIntent = new Intent(this, TimerNotificationService.class);
+        stopService(serviceIntent);
+    }
+
+    private void createNotificationChannel() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            CharSequence name = "Timer Channel";
+            String description = "Canal para el temporizador";
+            int importance = NotificationManager.IMPORTANCE_LOW;
+            NotificationChannel channel = new NotificationChannel("timer_channel", name, importance);
+            channel.setDescription(description);
+
+            // Registrar el canal con el sistema
+            NotificationManager notificationManager = getSystemService(NotificationManager.class);
+            notificationManager.createNotificationChannel(channel);
+        }
+    }
+
+    private boolean isServiceRunning() {
+        ActivityManager manager = (ActivityManager) getSystemService(Context.ACTIVITY_SERVICE);
+        for (ActivityManager.RunningServiceInfo service : manager.getRunningServices(Integer.MAX_VALUE)) {
+            if (TimerNotificationService.class.getName().equals(service.service.getClassName())) {
+                return true;
+            }
+        }
+        return false;
     }
 }
