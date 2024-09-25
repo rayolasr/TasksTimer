@@ -1,6 +1,7 @@
 package com.rayolaser.taskstimer;
 
 import android.app.ActivityManager;
+import android.app.AlertDialog;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
@@ -153,9 +154,20 @@ public class MainActivity extends AppCompatActivity {
             Task selectedTask = (Task) parent.getItemAtPosition(position);
             int idTaskToDelete = selectedTask.getIdTask();
 
-            // Llamar al método para eliminar la tarea
-            dbHelper.deleteTask(String.valueOf(idTaskToDelete));
-            loadTasks(); // Recargar la lista
+            new AlertDialog.Builder(MainActivity.this)
+                    .setTitle("Eliminar tarea")
+                    .setMessage("¿Estás seguro de que deseas eliminar esta tarea?")
+                    .setPositiveButton("Sí", (dialog, which) -> {
+                        // Si el usuario confirma, elimina la tarea
+                        dbHelper.deleteTask(String.valueOf(idTaskToDelete));
+                        loadTasks(); // Recarga la lista de tareas
+                        Toast.makeText(MainActivity.this, "Tarea eliminada", Toast.LENGTH_SHORT).show();
+                    })
+                    .setNegativeButton("No", (dialog, which) -> {
+                        // Cierra el diálogo si el usuario cancela
+                        dialog.dismiss();
+                    })
+                    .show(); // Asegúrate de llamar a show() para mostrar el diálogo
         });
     }
 
