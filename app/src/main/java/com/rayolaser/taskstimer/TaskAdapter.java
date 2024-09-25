@@ -7,6 +7,8 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
+
 import java.util.List;
 
 import Entities.Task;
@@ -16,8 +18,9 @@ public class TaskAdapter extends ArrayAdapter<Task> {
         super(context, 0, tasks);
     }
 
+    @NonNull
     @Override
-    public View getView(int position, View convertView, ViewGroup parent) {
+    public View getView(int position, View convertView, @NonNull ViewGroup parent) {
         // Crear o reutilizar la vista
         if (convertView == null) {
             convertView = LayoutInflater.from(getContext()).inflate(android.R.layout.simple_list_item_1, parent, false);
@@ -26,6 +29,7 @@ public class TaskAdapter extends ArrayAdapter<Task> {
         // Obtener la tarea
         Task task = getItem(position);
 
+        assert task != null;
         int secs = (int) task.getTime();
         int mins = secs / 60;
         int hours = mins / 60;
