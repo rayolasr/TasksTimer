@@ -37,14 +37,21 @@ public class TaskAdapter extends ArrayAdapter<Task> {
         TextView textView = convertView.findViewById(android.R.id.text1);
         assert task != null;
         String timeString = formatTime(task.getTime());
-        String TaskName;
+        String taskDate;
+        String taskName;
         if (!Objects.equals(task.getTaskName(), "")) {
-            TaskName = task.getTaskName();
+            taskName = task.getTaskName();
         }else {
-            TaskName = "-";
+            taskName = "-";
         }
 
-        textView.setText(MessageFormat.format("{0}\n{1}", TaskName, timeString));
+        if (!Objects.equals(task.getDate(), null)) {
+            taskDate = task.getDate();
+        }else {
+            taskDate = "-";
+        }
+
+        textView.setText(MessageFormat.format("{0}\n{1}\n{2}", taskName, timeString, taskDate));
         Log.d("TaskAdapter", "getView: " + task.getTime());
 
         return convertView;

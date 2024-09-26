@@ -5,15 +5,20 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.util.Log;
+
+import java.util.Calendar;
+import java.util.Date;
 
 public class TaskDatabaseHelper extends SQLiteOpenHelper {
 
     private static final String DATABASE_NAME = "tasks.db";
-    private static final int DATABASE_VERSION = 2;
+    private static final int DATABASE_VERSION = 5;
     private static final String TABLE_NAME = "tasks";
     private static final String COLUMN_TASK_NAME = "task_name";
     private static final String COLUMN_TIME = "time";
     private static final String COLUMN_ID = "id_task";
+    private static final String COLUMN_DATE = "task_date";
 
     public TaskDatabaseHelper(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
@@ -22,20 +27,22 @@ public class TaskDatabaseHelper extends SQLiteOpenHelper {
     @Override
     public void onCreate(SQLiteDatabase db) {
         String createTable = "CREATE TABLE " + TABLE_NAME + " (" +
-                COLUMN_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " + // Nuevo campo id
+                COLUMN_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
                 COLUMN_TASK_NAME + " TEXT, " +
-                COLUMN_TIME + " INTEGER)";
+                COLUMN_TIME + " INTEGER, " +
+                COLUMN_DATE + " TEXT)";
         db.execSQL(createTable);
     }
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-        if (oldVersion < 2) {
-            // Crear una nueva tabla con el campo id_task
-            db.execSQL("CREATE TABLE tasks_new (" +
-                    COLUMN_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
+        if (oldVersion < 5) {
+            // Crear una nueva tabla
+            db.execSQL("CREATE TABLE " + "tasks_new" + " (" +
+                    COLUMN_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " + // Nuevo campo id
                     COLUMN_TASK_NAME + " TEXT, " +
-                    COLUMN_TIME + " INTEGER)");
+                    COLUMN_TIME + " INTEGER, " +
+                    COLUMN_DATE + " TEXT)");
 
             // Copiar los datos de la tabla antigua a la nueva
             db.execSQL("INSERT INTO tasks_new (" + COLUMN_TASK_NAME + ", " + COLUMN_TIME + ") " +
@@ -52,8 +59,12 @@ public class TaskDatabaseHelper extends SQLiteOpenHelper {
     public void saveTask(String taskName, long time) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues values = new ContentValues();
+        Calendar calendar = Calendar.getInstance();
+        String date = calendar.get(Calendar.DAY_OF_MONTH) + "-" + calendar.get(Calendar.MONTH) + "-" + calendar.get(Calendar.YEAR);
+        Log.d("TaskDatabaseHelper", "date: " + date);
         values.put(COLUMN_TASK_NAME, taskName);
         values.put(COLUMN_TIME, time);
+        values.put(COLUMN_DATE, date);
 
         db.insert(TABLE_NAME, null, values);
         db.close();
@@ -61,7 +72,7 @@ public class TaskDatabaseHelper extends SQLiteOpenHelper {
 
     public Cursor getTasks() {
         SQLiteDatabase db = this.getReadableDatabase();
-        return db.rawQuery("SELECT * FROM " + TABLE_NAME + " ORDER BY " + COLUMN_ID + " DESC", null); // Ordenar por antigüedad
+        return db.rawQuery("SELECT * FROM " + TABLE_NAME + " ORDER BY " + COLUMN_ID + " DESC", null);
     }
 
     public void deleteTask(String taskId) {

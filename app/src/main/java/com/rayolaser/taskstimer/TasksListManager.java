@@ -7,6 +7,7 @@ import android.widget.ListView;
 import android.widget.Toast;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import Entities.Task;
@@ -50,8 +51,11 @@ public class TasksListManager {
             int idTaskIndex = cursor.getColumnIndex("id_task");
             int taskNameIndex = cursor.getColumnIndex("task_name");
             int timeIndex = cursor.getColumnIndex("time");
+            int dateIndex = cursor.getColumnIndex("task_date");
             int idTask = 0;
             String taskName = "Empty";
+            String taskDate = "-";
+            String formatedDate;
             long time = 0;
             if (idTaskIndex != -1) {
                 idTask = cursor.getInt(idTaskIndex);
@@ -62,8 +66,12 @@ public class TasksListManager {
             if (taskNameIndex != -1) {
                 time = cursor.getLong(timeIndex);
             }
+            if (dateIndex != -1) {
+                taskDate = cursor.getString(dateIndex);
+                Date date = new Date();
+            }
 
-            Task task = new Task(idTask, taskName, time);
+            Task task = new Task(idTask, taskName, time, taskDate);
             taskList.add(task);
         }
         cursor.close();
