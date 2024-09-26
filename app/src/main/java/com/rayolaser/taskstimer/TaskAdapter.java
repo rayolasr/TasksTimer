@@ -13,6 +13,7 @@ import androidx.annotation.NonNull;
 import java.text.MessageFormat;
 import java.util.List;
 import java.util.Locale;
+import java.util.Objects;
 
 import Entities.Task;
 
@@ -36,7 +37,14 @@ public class TaskAdapter extends ArrayAdapter<Task> {
         TextView textView = convertView.findViewById(android.R.id.text1);
         assert task != null;
         String timeString = formatTime(task.getTime());
-        textView.setText(MessageFormat.format("{0}\n{1}", task.getTaskName(), timeString));
+        String TaskName;
+        if (!Objects.equals(task.getTaskName(), "")) {
+            TaskName = task.getTaskName();
+        }else {
+            TaskName = "-";
+        }
+
+        textView.setText(MessageFormat.format("{0}\n{1}", TaskName, timeString));
         Log.d("TaskAdapter", "getView: " + task.getTime());
 
         return convertView;

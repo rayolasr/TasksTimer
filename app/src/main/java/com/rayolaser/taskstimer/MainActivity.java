@@ -91,18 +91,14 @@ public class MainActivity extends AppCompatActivity {
                 startTimerNotification();
             } else {
                 String taskName = taskNameEditText.getText().toString();
-                if (!taskName.isEmpty()) {
-                    updateTime = timerManager.getElapsedTime();
-                    dbHelper.saveTask(taskName, updateTime);
-                    tasksManager.loadTasks();
-                    timerManager.reset();
-                    timerTextView.setText(R.string._00_00_00);
-                    Toast.makeText(MainActivity.this, "Task saved", Toast.LENGTH_SHORT).show();
-                    taskNameEditText.setText("");
-                    stopTimerNotification();
-                } else {
-                    Toast.makeText(MainActivity.this, "Please enter a task name", Toast.LENGTH_SHORT).show();
-                }
+                updateTime = timerManager.getElapsedTime();
+                dbHelper.saveTask(taskName, updateTime);
+                tasksManager.loadTasks();
+                timerManager.reset();
+                timerTextView.setText(R.string._00_00_00);
+                Toast.makeText(MainActivity.this, "Task saved", Toast.LENGTH_SHORT).show();
+                taskNameEditText.setText("");
+                stopTimerNotification();
             }
 
             fadeOut.addListener(new AnimatorListenerAdapter() {
