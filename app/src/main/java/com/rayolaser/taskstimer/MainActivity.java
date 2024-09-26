@@ -97,10 +97,10 @@ public class MainActivity extends AppCompatActivity {
                     timerManager.reset();
                     timerTextView.setText(R.string._00_00_00);
                     Toast.makeText(MainActivity.this, "Task saved", Toast.LENGTH_SHORT).show();
+                    stopTimerNotification();
                 } else {
                     Toast.makeText(MainActivity.this, "Please enter a task name", Toast.LENGTH_SHORT).show();
                 }
-                stopTimerNotification();
             }
 
             fadeOut.addListener(new AnimatorListenerAdapter() {
