@@ -61,6 +61,7 @@ public class MainActivity extends AppCompatActivity {
         taskNameEditText = findViewById(R.id.task_name);
         ImageButton superButton = findViewById(R.id.super_button);
         ListView taskListView = findViewById(R.id.task_list_view);
+        TextView buttonText = findViewById(R.id.super_button_text);
         tasksManager = new TasksListManager(this, taskListView);
         timerManager = new TimerManager(this);
 
@@ -76,8 +77,8 @@ public class MainActivity extends AppCompatActivity {
         }
 
         if (timerManager.isRunning()) {
-            //superButton.setText(R.string.stop_and_save);
-            superButton.setImageResource(R.drawable.play_vector);
+            buttonText.setText(R.string.stop_and_save);
+            superButton.setImageResource(R.drawable.pause_vector);
         }
 
         superButton.setOnClickListener(v -> {
@@ -108,18 +109,21 @@ public class MainActivity extends AppCompatActivity {
                 public void onAnimationEnd(Animator animation) {
                     if (timerManager.isRunning()) {
                         // Cambiar a estado de detenido
-                        //superButton.setText(R.string.stop_and_save);
+                        buttonText.setText(R.string.stop_and_save);
                         superButton.setImageResource(R.drawable.pause_vector);
                     } else {
                         // Cambiar a estado de en ejecución
-                        //superButton.setText(R.string.start);
+                        buttonText.setText(R.string.start);
                         superButton.setImageResource(R.drawable.play_vector);
                     }
 
                     // Animación de desvanecimiento para que vuelva a aparecer
-                    ObjectAnimator fadeIn = ObjectAnimator.ofFloat(superButton, "alpha", 0f, 1f);
-                    fadeIn.setDuration(300);
-                    fadeIn.start();
+                    ObjectAnimator fadeInImage = ObjectAnimator.ofFloat(superButton, "alpha", 0f, 1f);
+                    ObjectAnimator fadeInText = ObjectAnimator.ofFloat(buttonText, "alpha", 0f, 1f);
+                    fadeInImage.setDuration(300);
+                    fadeInText.setDuration(300);
+                    fadeInImage.start();
+                    fadeInText.start();
                 }
             });
             fadeOut.start();
