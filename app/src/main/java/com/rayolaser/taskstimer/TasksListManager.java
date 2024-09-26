@@ -49,7 +49,7 @@ public class TasksListManager {
         while (cursor.moveToNext()) {
             int idTaskIndex = cursor.getColumnIndex("id_task");
             int taskNameIndex = cursor.getColumnIndex("task_name");
-            int timeIndex = cursor.getColumnIndex("id_task");
+            int timeIndex = cursor.getColumnIndex("time");
             int idTask = 0;
             String taskName = "Empty";
             long time = 0;

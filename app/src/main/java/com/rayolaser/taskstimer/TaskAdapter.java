@@ -1,6 +1,7 @@
 package com.rayolaser.taskstimer;
 
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -9,7 +10,9 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 
+import java.text.MessageFormat;
 import java.util.List;
+import java.util.Locale;
 
 import Entities.Task;
 
@@ -29,15 +32,23 @@ public class TaskAdapter extends ArrayAdapter<Task> {
         // Obtener la tarea
         Task task = getItem(position);
 
-        assert task != null;
-        int secs = (int) task.getTime();
-        int mins = secs / 60;
-        int hours = mins / 60;
-
         // Configurar el texto para mostrar solo el nombre de la tarea
         TextView textView = convertView.findViewById(android.R.id.text1);
-        textView.setText(task.getTaskName() + ": " + hours + ":" + mins + ":" + secs);
+        assert task != null;
+        String timeString = formatTime(task.getTime());
+        textView.setText(MessageFormat.format("{0}\n{1}", task.getTaskName(), timeString));
+        Log.d("TaskAdapter", "getView: " + task.getTime());
 
         return convertView;
     }
+
+    public static String formatTime(long millis) {
+
+        long seconds = (millis / 1000) % 60;  // Convertir a segundos y obtener el residuo de 60
+        long minutes = (millis / (1000 * 60)) % 60;  // Convertir a minutos y obtener el residuo de 60
+        long hours = millis / (1000 * 60 * 60);  // Convertir a horas
+
+        return String.format(Locale.US, "%02d:%02d:%02d", hours, minutes, seconds); // Formato HH:MM:SS
+    }
+
 }

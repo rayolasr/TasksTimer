@@ -1,5 +1,8 @@
 package com.rayolaser.taskstimer;
 
+import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
+import android.animation.ObjectAnimator;
 import android.app.ActivityManager;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
@@ -9,8 +12,8 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
-import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -36,11 +39,8 @@ public class MainActivity extends AppCompatActivity {
         public void run() {
             if (timerManager.isRunning() || !timerManager.isPaused()) {
                 updateTime = timerManager.getElapsedTime();
-                int secs = (int) (updateTime / 1000);
-                int mins = secs / 60;
-                int hours = mins / 60;
-                secs = secs % 60;
-                timerTextView.setText(String.format(Locale.US, "%02d:%02d:%02d", hours, mins, secs));
+                String timeString = formatTime(updateTime);
+                timerTextView.setText(timeString);
             }
             handler.postDelayed(this, 1000);
         }
@@ -59,7 +59,7 @@ public class MainActivity extends AppCompatActivity {
 
         timerTextView = findViewById(R.id.timer);
         taskNameEditText = findViewById(R.id.task_name);
-        Button superButton = findViewById(R.id.super_button);
+        ImageButton superButton = findViewById(R.id.super_button);
         ListView taskListView = findViewById(R.id.task_list_view);
         tasksManager = new TasksListManager(this, taskListView);
         timerManager = new TimerManager(this);
@@ -75,7 +75,15 @@ public class MainActivity extends AppCompatActivity {
             startService(serviceIntent);
         }
 
+        if (timerManager.isRunning()) {
+            //superButton.setText(R.string.stop_and_save);
+            superButton.setImageResource(R.drawable.play_vector);
+        }
+
         superButton.setOnClickListener(v -> {
+            ObjectAnimator fadeOut = ObjectAnimator.ofFloat(superButton, "alpha", 1f, 0f);
+            fadeOut.setDuration(300);
+
             if (!timerManager.isRunning()) {
                 Log.d("MainActivity", "Starting timer...");
                 timerManager.start();
@@ -83,6 +91,7 @@ public class MainActivity extends AppCompatActivity {
             } else {
                 String taskName = taskNameEditText.getText().toString();
                 if (!taskName.isEmpty()) {
+                    updateTime = timerManager.getElapsedTime();
                     dbHelper.saveTask(taskName, updateTime);
                     tasksManager.loadTasks();
                     timerManager.reset();
@@ -93,6 +102,27 @@ public class MainActivity extends AppCompatActivity {
                 }
                 stopTimerNotification();
             }
+
+            fadeOut.addListener(new AnimatorListenerAdapter() {
+                @Override
+                public void onAnimationEnd(Animator animation) {
+                    if (timerManager.isRunning()) {
+                        // Cambiar a estado de detenido
+                        //superButton.setText(R.string.stop_and_save);
+                        superButton.setImageResource(R.drawable.pause_vector);
+                    } else {
+                        // Cambiar a estado de en ejecución
+                        //superButton.setText(R.string.start);
+                        superButton.setImageResource(R.drawable.play_vector);
+                    }
+
+                    // Animación de desvanecimiento para que vuelva a aparecer
+                    ObjectAnimator fadeIn = ObjectAnimator.ofFloat(superButton, "alpha", 0f, 1f);
+                    fadeIn.setDuration(300);
+                    fadeIn.start();
+                }
+            });
+            fadeOut.start();
         });
     }
 
@@ -128,5 +158,14 @@ public class MainActivity extends AppCompatActivity {
             }
         }
         return false;
+    }
+
+    public static String formatTime(long millis) {
+
+        long seconds = (millis / 1000) % 60;  // Convertir a segundos y obtener el residuo de 60
+        long minutes = (millis / (1000 * 60)) % 60;  // Convertir a minutos y obtener el residuo de 60
+        long hours = millis / (1000 * 60 * 60);  // Convertir a horas
+
+        return String.format(Locale.US, "%02d:%02d:%02d", hours, minutes, seconds); // Formato HH:MM:SS
     }
 }
