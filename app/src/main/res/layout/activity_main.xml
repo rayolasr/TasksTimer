@@ -31,16 +31,33 @@
         android:textSize="30sp"
         android:layout_gravity="center_horizontal" />
 
-        <Button
-            android:id="@+id/super_button"
-            style="?android:attr/buttonBarButtonStyle"
+        <LinearLayout
+            android:id="@+id/button_container"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
-            android:layout_marginEnd="8dp"
-            android:drawableStart="@drawable/play_vector"
-            android:drawablePadding="8dp"
-            android:text="@string/start" />
+            android:gravity="center_horizontal"
+            android:orientation="vertical">
+
+            <ImageButton
+                android:id="@+id/super_button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="8dp"
+                android:background="?android:attr/selectableItemBackgroundBorderless"
+                android:contentDescription="@string/start"
+                android:padding="16dp"
+                android:scaleType="centerInside"
+                android:src="@drawable/play_vector" />
+
+            <TextView
+                android:id="@+id/super_button_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/start"
+                android:textColor="?android:textColorPrimary"
+                android:textSize="16sp" />
+        </LinearLayout>
 
         <ListView
             android:id="@+id/task_list_view"
