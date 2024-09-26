@@ -37,14 +37,21 @@ public class TaskAdapter extends ArrayAdapter<Task> {
         TextView textView = convertView.findViewById(android.R.id.text1);
         assert task != null;
         String timeString = formatTime(task.getTime());
-        String TaskName;
+        String taskDate;
+        String taskName;
         if (!Objects.equals(task.getTaskName(), "")) {
-            TaskName = task.getTaskName();
+            taskName = task.getTaskName();
         }else {
-            TaskName = "-";
+            taskName = "-";
         }
 
-        textView.setText(MessageFormat.format("{0}\n{1}", TaskName, timeString));
+        if (!Objects.equals(task.getDate(), null)) {
+            taskDate = task.getDate();
+        }else {
+            taskDate = "-";
+        }
+
+        textView.setText(MessageFormat.format("{0}\n{1}\n{2}", taskName, timeString, taskDate));
         Log.d("TaskAdapter", "getView: " + task.getTime());
 
         return convertView;
@@ -52,11 +59,11 @@ public class TaskAdapter extends ArrayAdapter<Task> {
 
     public static String formatTime(long millis) {
 
-        long seconds = (millis / 1000) % 60;  // Convertir a segundos y obtener el residuo de 60
-        long minutes = (millis / (1000 * 60)) % 60;  // Convertir a minutos y obtener el residuo de 60
-        long hours = millis / (1000 * 60 * 60);  // Convertir a horas
+        long seconds = (millis / 1000) % 60;
+        long minutes = (millis / (1000 * 60)) % 60;
+        long hours = millis / (1000 * 60 * 60);
 
-        return String.format(Locale.US, "%02d:%02d:%02d", hours, minutes, seconds); // Formato HH:MM:SS
+        return String.format(Locale.US, "%02d:%02d:%02d", hours, minutes, seconds);
     }
 
 }

@@ -1,14 +1,18 @@
 package Entities;
 
+import java.util.Date;
+
 public class Task {
     private int idTask;
     private String taskName;
     private long time;
+    private String date;
 
-    public Task(int idTask, String taskName, long time) {
+    public Task(int idTask, String taskName, long time, String date) {
         this.idTask = idTask;
         this.taskName = taskName;
         this.time = time;
+        this.date = date;
     }
 
     public void setIdTask(int idTask) {
@@ -21,6 +25,14 @@ public class Task {
 
     public void setTime(long time) {
         this.time = time;
+    }
+
+    public void setDate(String date) {
+        this.date = date;
+    }
+
+    public String getDate() {
+        return date;
     }
 
     public int getIdTask() {
