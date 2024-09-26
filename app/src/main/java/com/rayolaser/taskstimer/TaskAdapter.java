@@ -59,11 +59,11 @@ public class TaskAdapter extends ArrayAdapter<Task> {
 
     public static String formatTime(long millis) {
 
-        long seconds = (millis / 1000) % 60;  // Convertir a segundos y obtener el residuo de 60
-        long minutes = (millis / (1000 * 60)) % 60;  // Convertir a minutos y obtener el residuo de 60
-        long hours = millis / (1000 * 60 * 60);  // Convertir a horas
+        long seconds = (millis / 1000) % 60;
+        long minutes = (millis / (1000 * 60)) % 60;
+        long hours = millis / (1000 * 60 * 60);
 
-        return String.format(Locale.US, "%02d:%02d:%02d", hours, minutes, seconds); // Formato HH:MM:SS
+        return String.format(Locale.US, "%02d:%02d:%02d", hours, minutes, seconds);
     }
 
 }
