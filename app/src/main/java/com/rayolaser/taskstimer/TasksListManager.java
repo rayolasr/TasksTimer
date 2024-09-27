@@ -5,6 +5,7 @@ import static java.text.DateFormat.getDateInstance;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.database.Cursor;
+import android.util.Log;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -53,7 +54,9 @@ public class TasksListManager {
 
     public void loadTasks() {
         List<Task> taskList = new ArrayList<>();
-        Cursor cursor = dbHelper.getTasks();
+        Date currentDate = new Date();
+        Log.d("TasksListManager", "currentDate: " + currentDate);
+        Cursor cursor = dbHelper.getTasks(currentDate);
 
         while (cursor.moveToNext()) {
             int idTaskIndex = cursor.getColumnIndex("id_task");

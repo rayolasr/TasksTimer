@@ -7,6 +7,8 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 
@@ -60,8 +62,10 @@ public class TaskDatabaseHelper extends SQLiteOpenHelper {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues values = new ContentValues();
         Calendar calendar = Calendar.getInstance();
-        String date = calendar.get(Calendar.DAY_OF_MONTH) + "-" + calendar.get(Calendar.MONTH) + "-" + calendar.get(Calendar.YEAR);
-        Log.d("TaskDatabaseHelper", "date: " + date);
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+        String date = dateFormat.format(calendar.getTime());
+        //String date = calendar.get(Calendar.DAY_OF_MONTH) + "-" + calendar.get(Calendar.MONTH) + "-" + calendar.get(Calendar.YEAR);
+        Log.d("TaskDatabaseHelper", "saveTask: taskName: " + taskName + ", time: " + time + ", date: " + date);
         values.put(COLUMN_TASK_NAME, taskName);
         values.put(COLUMN_TIME, time);
         values.put(COLUMN_DATE, date);
@@ -70,9 +74,18 @@ public class TaskDatabaseHelper extends SQLiteOpenHelper {
         db.close();
     }
 
-    public Cursor getTasks() {
+    public Cursor getTasks(Date date) {
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+        String formattedDate = dateFormat.format(date);
+        String whereClause = " WHERE " + COLUMN_DATE + " = '" + formattedDate + "'";
         SQLiteDatabase db = this.getReadableDatabase();
-        return db.rawQuery("SELECT * FROM " + TABLE_NAME + " ORDER BY " + COLUMN_ID + " DESC", null);
+        String query = "SELECT * FROM " + TABLE_NAME + whereClause + " ORDER BY " + COLUMN_ID + " DESC";
+        //String query = "SELECT * FROM " + TABLE_NAME + " ORDER BY " + COLUMN_ID + " DESC";
+        Log.d("TaskDatabaseHelper", "getTasks: query: " + query);
+        Cursor cursor = db.rawQuery(query, null);
+        int count = cursor.getCount();
+        Log.d("TaskDatabaseHelper", "getTasks: cursor count: " + count);
+        return cursor;
     }
 
     public void deleteTask(String taskId) {
