@@ -1,11 +1,15 @@
 package com.rayolaser.taskstimer;
 
+import static java.text.DateFormat.getDateInstance;
+
 import android.app.AlertDialog;
 import android.content.Context;
 import android.database.Cursor;
 import android.widget.ListView;
+import android.widget.TextView;
 import android.widget.Toast;
 
+import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -16,11 +20,15 @@ public class TasksListManager {
     private final TaskDatabaseHelper dbHelper;
     private final ListView taskListView;
     private final Context context;
+    private final TextView currentDateTextView;
 
-    public TasksListManager(Context context, ListView taskListView) {
+    public TasksListManager(Context context, ListView taskListView, TextView currentDateTextView) {
         dbHelper = new TaskDatabaseHelper(context);
         this.taskListView = taskListView;
         this.context = context;
+        this.currentDateTextView = currentDateTextView;
+
+        updateCurrentDate();
 
         taskListView.setOnItemClickListener((parent, view, position, id) -> {
             Task selectedTask = (Task) parent.getItemAtPosition(position);
@@ -39,7 +47,7 @@ public class TasksListManager {
                         // Cierra el diálogo si el usuario cancela
                         dialog.dismiss();
                     })
-                    .show(); // Asegúrate de llamar a show() para mostrar el diálogo
+                    .show(); // mostrar el diálogo
         });
     }
 
@@ -55,11 +63,10 @@ public class TasksListManager {
             int idTask = 0;
             String taskName = "Empty";
             String taskDate = "-";
-            String formatedDate;
             long time = 0;
             if (idTaskIndex != -1) {
                 idTask = cursor.getInt(idTaskIndex);
-            }// Asegúrate de que tu cursor tenga la columna
+            }
             if (taskNameIndex != -1) {
                 taskName = cursor.getString(taskNameIndex);
             }
@@ -68,7 +75,6 @@ public class TasksListManager {
             }
             if (dateIndex != -1) {
                 taskDate = cursor.getString(dateIndex);
-                Date date = new Date();
             }
 
             Task task = new Task(idTask, taskName, time, taskDate);
@@ -78,5 +84,12 @@ public class TasksListManager {
 
         TaskAdapter adapter = new TaskAdapter(context, taskList);
         taskListView.setAdapter(adapter);
+    }
+
+    // TODO: implement this way of formatting dates on the tasks list
+    public void updateCurrentDate() {
+        DateFormat dateFormat = getDateInstance();
+        String currentDate = dateFormat.format(new Date());
+        currentDateTextView.setText(currentDate);
     }
 }

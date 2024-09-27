@@ -61,8 +61,9 @@ public class MainActivity extends AppCompatActivity {
         taskNameEditText = findViewById(R.id.task_name);
         ImageButton superButton = findViewById(R.id.super_button);
         ListView taskListView = findViewById(R.id.task_list_view);
+        TextView currentDateTextView = findViewById(R.id.currentDateTextView);
         TextView buttonText = findViewById(R.id.super_button_text);
-        tasksManager = new TasksListManager(this, taskListView);
+        tasksManager = new TasksListManager(this, taskListView, currentDateTextView);
         timerManager = new TimerManager(this);
 
         handler.post(updateTimerThread);
@@ -81,6 +82,7 @@ public class MainActivity extends AppCompatActivity {
             superButton.setImageResource(R.drawable.pause_vector);
         }
 
+        // TODO: move all timer button logic to TimerManager
         superButton.setOnClickListener(v -> {
             ObjectAnimator fadeOut = ObjectAnimator.ofFloat(superButton, "alpha", 1f, 0f);
             fadeOut.setDuration(300);
