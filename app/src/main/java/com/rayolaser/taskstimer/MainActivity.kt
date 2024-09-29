@@ -56,7 +56,7 @@ class MainActivity : AppCompatActivity() {
         taskNameEditText = findViewById(R.id.task_name)
         val superButton = findViewById<ImageButton>(R.id.super_button)
         val taskListView = findViewById<ListView>(R.id.task_list_view)
-        val currentDateTextView = findViewById<TextView>(R.id.currentDateTextView)
+        val currentDateTextView = findViewById<TextView>(R.id.current_date)
         val buttonText = findViewById<TextView>(R.id.super_button_text)
         tasksManager = TasksListManager(this, taskListView, currentDateTextView)
         timerManager = TimerManager(this)
