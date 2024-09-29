@@ -36,7 +36,7 @@ class MainActivity : AppCompatActivity() {
             if (timerManager!!.isRunning || !timerManager!!.isPaused) {
                 updateTime = timerManager!!.elapsedTime
                 val timeString = formatTime(updateTime)
-                timerTextView!!.text = timeString
+                timerTextView.text = timeString
             }
             handler.postDelayed(this, 1000)
         }
@@ -54,6 +54,8 @@ class MainActivity : AppCompatActivity() {
 
         timerTextView = findViewById(R.id.timer)
         taskNameEditText = findViewById(R.id.task_name)
+        val previousDateButton = findViewById<ImageButton>(R.id.btn_previous_date)
+        val nextDateButton = findViewById<ImageButton>(R.id.btn_next_date)
         val superButton = findViewById<ImageButton>(R.id.super_button)
         val taskListView = findViewById<ListView>(R.id.task_list_view)
         val currentDateTextView = findViewById<TextView>(R.id.current_date)
@@ -76,6 +78,9 @@ class MainActivity : AppCompatActivity() {
             buttonText.setText(R.string.stop_and_save)
             superButton.setImageResource(R.drawable.pause_vector)
         }
+
+        previousDateButton.setOnClickListener { v: View? -> tasksManager!!.previousDate() }
+        nextDateButton.setOnClickListener { v: View? -> tasksManager!!.nextDate() }
 
         // TODO: move all timer button logic to TimerManager
         superButton.setOnClickListener { v: View? ->
