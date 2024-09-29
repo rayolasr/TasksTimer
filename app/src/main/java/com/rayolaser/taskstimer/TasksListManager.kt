@@ -12,6 +12,7 @@ import android.widget.ListView
 import android.widget.TextView
 import android.widget.Toast
 import java.text.DateFormat
+import java.util.Calendar
 import java.util.Date
 
 class TasksListManager(
@@ -20,9 +21,12 @@ class TasksListManager(
     private val currentDateTextView: TextView
 ) {
     private val dbHelper = TaskDatabaseHelper(context)
+    private var listDate: Date = Date()
 
     init {
-        updateCurrentDate()
+        //val currentDate = Date()
+        listDate = Date()
+        updateDateTextView(listDate)
 
         taskListView.onItemClickListener =
             OnItemClickListener { parent: AdapterView<*>, _: View?, position: Int, _: Long ->
@@ -35,7 +39,7 @@ class TasksListManager(
                     .setPositiveButton("Sí") { _: DialogInterface?, _: Int ->
                         // Si el usuario confirma, elimina la tarea
                         dbHelper.deleteTask(idTaskToDelete.toString())
-                        loadTasks() // Recarga la lista de tareas
+                        loadTasks(listDate) // Recarga la lista de tareas
                         Toast.makeText(context, "Tarea eliminada", Toast.LENGTH_SHORT).show()
                     }
                     .setNegativeButton("No") { dialog: DialogInterface, _: Int ->
@@ -46,11 +50,10 @@ class TasksListManager(
             }
     }
 
-    fun loadTasks() {
+    fun loadTasks(date: Date? = Date()) {
         val taskList: MutableList<Task> = ArrayList()
-        val currentDate = Date()
-        Log.d("TasksListManager", "currentDate: $currentDate")
-        val cursor = dbHelper.getTasks(currentDate)
+        Log.d("TasksListManager", "currentDate: $date")
+        val cursor = dbHelper.getTasks(date)
 
         while (cursor.moveToNext()) {
             val idTaskIndex = cursor.getColumnIndex("id_task")
@@ -84,9 +87,29 @@ class TasksListManager(
     }
 
     // TODO: implement this way of formatting dates on the tasks list
-    private fun updateCurrentDate() {
+    private fun updateDateTextView(date: Date) {
         val dateFormat = DateFormat.getDateInstance()
-        val currentDate = dateFormat.format(Date())
+        val currentDate = dateFormat.format(date)
         currentDateTextView.text = currentDate
+    }
+
+    fun previousDate() {
+        val calendar = Calendar.getInstance()
+        calendar.time = listDate
+        calendar.add(Calendar.DAY_OF_YEAR, -1) // Restamos 1 día
+        listDate = calendar.time
+        val previousDay = listDate
+        updateDateTextView(previousDay)
+        loadTasks(previousDay)
+    }
+
+    fun nextDate() {
+        val calendar = Calendar.getInstance()
+        calendar.time = listDate
+        calendar.add(Calendar.DAY_OF_YEAR, +1) // Restamos 1 día
+        listDate = calendar.time
+        val nextDate = listDate
+        updateDateTextView(nextDate)
+        loadTasks(nextDate)
     }
 }

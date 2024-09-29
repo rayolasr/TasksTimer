@@ -64,13 +64,43 @@
                 android:textSize="16sp" />
         </LinearLayout>
 
-        <TextView
-            android:id="@+id/current_date"
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="46dp"
-            android:gravity="bottom|center_horizontal"
-            android:text="@string/date"
-            android:textSize="20sp" />
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center_vertical">
+
+            <!-- Botón para retroceder la fecha -->
+            <ImageButton
+                android:id="@+id/btn_previous_date"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:background="?android:attr/selectableItemBackgroundBorderless"
+                android:contentDescription="@string/previous_date"
+                android:padding="8dp"
+                android:src="@drawable/arrow_left_vector" />
+
+            <!-- TextView que muestra la fecha actual -->
+            <TextView
+                android:id="@+id/current_date"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:text="@string/date"
+                android:textSize="20sp" />
+
+            <!-- Botón para avanzar la fecha -->
+            <ImageButton
+                android:id="@+id/btn_next_date"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:background="?android:attr/selectableItemBackgroundBorderless"
+                android:contentDescription="@string/next_date"
+                android:padding="8dp"
+                android:src="@drawable/arrow_right_vector" />
+
+        </LinearLayout>
 
         <ListView
             android:id="@+id/task_list_view"
