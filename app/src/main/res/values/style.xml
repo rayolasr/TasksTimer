@@ -1,8 +1,7 @@
 <resources>
-    <!-- Estilo personalizado para los botones en el tema claro -->
     <style name="ButtonStyleCustomLight" parent="Widget.MaterialComponents.Button">
         <item name="android:backgroundTint">@color/buttonColor</item>
         <item name="android:textColor">@color/buttonTextColor</item>
-        <item name="android:padding">12dp</item> <!-- Opcional: Espaciado interno -->
+        <item name="android:padding">12dp</item>
     </style>
 </resources>
