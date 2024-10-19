@@ -1,6 +1,6 @@
 package com.rayolaser.taskstimer
 
-import Entities.Task
+import com.rayolaser.taskstimer.entities.Task
 import android.app.AlertDialog
 import android.content.Context
 import android.content.DialogInterface
@@ -50,7 +50,7 @@ class TasksListManager(
             }
     }
 
-    fun loadTasks(date: Date? = Date()) {
+    fun loadTasks(date: Date = Date()) {
         val taskList: MutableList<Task> = ArrayList()
         Log.d("TasksListManager", "currentDate: $date")
         val cursor = dbHelper.getTasks(date)
@@ -77,7 +77,12 @@ class TasksListManager(
                 taskDate = cursor.getString(dateIndex)
             }
 
-            val task = Task(idTask, taskName, time, taskDate)
+            val task = Task(
+                idTask,
+                taskName,
+                time,
+                taskDate
+            )
             taskList.add(task)
         }
         cursor.close()

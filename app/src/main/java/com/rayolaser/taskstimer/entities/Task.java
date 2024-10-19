@@ -1,6 +1,4 @@
-package Entities;
-
-import java.util.Date;
+package com.rayolaser.taskstimer.entities;
 
 public class Task {
     private int idTask;
