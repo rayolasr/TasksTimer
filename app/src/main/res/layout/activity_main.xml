@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/main"
     android:layout_width="match_parent"
@@ -91,6 +92,15 @@
                 android:textSize="20sp" />
 
             <!-- Botón para avanzar la fecha -->
+
+            <ImageButton
+                android:id="@+id/calendar_button"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:background="?android:attr/selectableItemBackgroundBorderless"
+                android:contentDescription="@string/calendario"
+                app:srcCompat="@drawable/calendar_vector" />
+
             <ImageButton
                 android:id="@+id/btn_next_date"
                 android:layout_width="48dp"

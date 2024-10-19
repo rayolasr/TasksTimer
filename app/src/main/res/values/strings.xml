@@ -12,4 +12,5 @@
     <string name="start_button">Start timer</string>
     <string name="previous_date">Previous Date</string>
     <string name="next_date">Next Date</string>
+    <string name="calendario">Calendario</string>
 </resources>
