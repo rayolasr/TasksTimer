@@ -40,10 +40,10 @@ class TaskDatabaseHelper(context: Context?) :
             )
 
             // Eliminar la tabla antigua
-            db.execSQL("DROP TABLE IF EXISTS " + TABLE_NAME)
+            db.execSQL("DROP TABLE IF EXISTS $TABLE_NAME")
 
             // Renombrar la nueva tabla para que tenga el nombre original
-            db.execSQL("ALTER TABLE tasks_new RENAME TO " + TABLE_NAME)
+            db.execSQL("ALTER TABLE tasks_new RENAME TO $TABLE_NAME")
         }
     }
 
@@ -63,12 +63,12 @@ class TaskDatabaseHelper(context: Context?) :
         db.close()
     }
 
-    fun getTasks(date: Date?): Cursor {
+    fun getTasks(date: Date): Cursor {
         val dateFormat = SimpleDateFormat("yyyy-MM-dd", Locale.US)
         val formattedDate = dateFormat.format(date)
-        val whereClause = " WHERE " + COLUMN_DATE + " = '" + formattedDate + "'"
+        val whereClause = " WHERE $COLUMN_DATE = '$formattedDate'"
         val db = this.readableDatabase
-        val query = "SELECT * FROM " + TABLE_NAME + whereClause + " ORDER BY " + COLUMN_ID + " DESC"
+        val query = "SELECT * FROM $TABLE_NAME$whereClause ORDER BY $COLUMN_ID DESC"
         //String query = "SELECT * FROM " + TABLE_NAME + " ORDER BY " + COLUMN_ID + " DESC";
         Log.d("TaskDatabaseHelper", "getTasks: query: $query")
         val cursor = db.rawQuery(query, null)
@@ -79,7 +79,7 @@ class TaskDatabaseHelper(context: Context?) :
 
     fun deleteTask(taskId: String) {
         val db = this.writableDatabase
-        db.delete(TABLE_NAME, COLUMN_ID + " = ?", arrayOf(taskId))
+        db.delete(TABLE_NAME, "$COLUMN_ID = ?", arrayOf(taskId))
         db.close()
     }
 

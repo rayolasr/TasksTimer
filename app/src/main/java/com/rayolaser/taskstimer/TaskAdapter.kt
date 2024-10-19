@@ -1,7 +1,6 @@
 package com.rayolaser.taskstimer
 
-import Entities.Task
-import android.R
+import com.rayolaser.taskstimer.entities.Task
 import android.content.Context
 import android.util.Log
 import android.view.LayoutInflater
@@ -15,19 +14,19 @@ import java.util.Locale
 class TaskAdapter(context: Context?, tasks: List<Task?>?) : ArrayAdapter<Task?>(
     context!!, 0, tasks!!
 ) {
-    override fun getView(position: Int, convertView: View?, parent: ViewGroup): View {
+    override fun getView(position: Int, convertViewParam: View?, parent: ViewGroup): View {
         // Crear o reutilizar la vista
-        var convertView = convertView
+        var convertView = convertViewParam
         if (convertView == null) {
-            convertView =
-                LayoutInflater.from(context).inflate(R.layout.simple_list_item_1, parent, false)
+            convertView = LayoutInflater.from(context)
+                .inflate(android.R.layout.simple_list_item_1, parent, false)
         }
 
         // Obtener la tarea
         val task = getItem(position)
 
         // Configurar el texto para mostrar solo el nombre de la tarea
-        val textView = convertView!!.findViewById<TextView>(R.id.text1)
+        val textView = convertView!!.findViewById<TextView>(android.R.id.text1)
         checkNotNull(task)
         val timeString = formatTime(task.time)
         val taskName = if (task.taskName != "") {
