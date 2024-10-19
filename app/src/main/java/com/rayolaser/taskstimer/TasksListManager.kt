@@ -96,18 +96,21 @@ class TasksListManager(
     fun previousDate() {
         val calendar = Calendar.getInstance()
         calendar.time = listDate
-        calendar.add(Calendar.DAY_OF_YEAR, -1) // Restamos 1 día
+        calendar.add(Calendar.DAY_OF_YEAR, -1)
         listDate = calendar.time
-        val previousDay = listDate
-        updateDateTextView(previousDay)
-        loadTasks(previousDay)
+        setDate(listDate)
     }
 
     fun nextDate() {
         val calendar = Calendar.getInstance()
         calendar.time = listDate
-        calendar.add(Calendar.DAY_OF_YEAR, +1) // Restamos 1 día
+        calendar.add(Calendar.DAY_OF_YEAR, +1)
         listDate = calendar.time
+        setDate(listDate)
+    }
+
+    fun setDate(date: Date) {
+        listDate = date
         val nextDate = listDate
         updateDateTextView(nextDate)
         loadTasks(nextDate)
