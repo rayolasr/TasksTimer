@@ -1,4 +1,4 @@
-package com.rayolaser.taskstimer
+package com.rayolaser.taskstimer.tasksmanager
 
 import com.rayolaser.taskstimer.entities.Task
 import android.content.Context
@@ -41,13 +41,11 @@ class TaskAdapter(context: Context?, tasks: List<Task?>?) : ArrayAdapter<Task?>(
         return convertView
     }
 
-    companion object {
-        fun formatTime(millis: Long): String {
-            val seconds = (millis / 1000) % 60
-            val minutes = (millis / (1000 * 60)) % 60
-            val hours = millis / (1000 * 60 * 60)
+    private fun formatTime(millis: Long): String {
+        val seconds = (millis / 1000) % 60
+        val minutes = (millis / (1000 * 60)) % 60
+        val hours = millis / (1000 * 60 * 60)
 
-            return String.format(Locale.US, "%02d:%02d:%02d", hours, minutes, seconds)
-        }
+        return String.format(Locale.US, "%02d:%02d:%02d", hours, minutes, seconds)
     }
 }

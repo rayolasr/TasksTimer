@@ -1,4 +1,4 @@
-package com.rayolaser.taskstimer
+package com.rayolaser.taskstimer.tasksmanager
 
 import android.content.ContentValues
 import android.content.Context
@@ -11,7 +11,16 @@ import java.util.Calendar
 import java.util.Date
 import java.util.Locale
 
+private const val DATABASE_NAME = "tasks.db"
+private const val DATABASE_VERSION = 5
+private const val TABLE_NAME = "tasks"
+private const val COLUMN_TASK_NAME = "task_name"
+private const val COLUMN_TIME = "time"
+private const val COLUMN_ID = "id_task"
+private const val COLUMN_DATE = "task_date"
+
 class TaskDatabaseHelper(context: Context?) :
+
     SQLiteOpenHelper(context, DATABASE_NAME, null, DATABASE_VERSION) {
     override fun onCreate(db: SQLiteDatabase) {
         val createTable = "CREATE TABLE " + TABLE_NAME + " (" +
@@ -81,16 +90,6 @@ class TaskDatabaseHelper(context: Context?) :
         val db = this.writableDatabase
         db.delete(TABLE_NAME, "$COLUMN_ID = ?", arrayOf(taskId))
         db.close()
-    }
-
-    companion object {
-        private const val DATABASE_NAME = "tasks.db"
-        private const val DATABASE_VERSION = 5
-        private const val TABLE_NAME = "tasks"
-        private const val COLUMN_TASK_NAME = "task_name"
-        private const val COLUMN_TIME = "time"
-        private const val COLUMN_ID = "id_task"
-        private const val COLUMN_DATE = "task_date"
     }
 }
 

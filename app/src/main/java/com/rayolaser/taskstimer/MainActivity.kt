@@ -4,7 +4,6 @@ import android.animation.Animator
 import android.animation.AnimatorListenerAdapter
 import android.animation.ObjectAnimator
 import android.app.ActivityManager
-import android.app.DatePickerDialog
 import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.content.Intent
@@ -21,8 +20,8 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.content.ContextCompat
-import java.util.Calendar
-import java.util.Date
+import com.rayolaser.taskstimer.tasksmanager.TaskDatabaseHelper
+import com.rayolaser.taskstimer.tasksmanager.TasksListManager
 import java.util.Locale
 
 
@@ -68,12 +67,6 @@ class MainActivity : AppCompatActivity() {
         tasksManager = TasksListManager(this, taskListView, currentDateTextView)
         timerManager = TimerManager(this)
 
-        // Obtén la fecha actual
-        val calendar: Calendar = Calendar.getInstance()
-        val year = calendar.get(Calendar.YEAR)
-        val month = calendar.get(Calendar.MONTH)
-        val day = calendar.get(Calendar.DAY_OF_MONTH)
-
         handler.post(updateTimerThread)
 
         tasksManager!!.loadTasks()
@@ -92,24 +85,7 @@ class MainActivity : AppCompatActivity() {
 
         previousDateButton.setOnClickListener { tasksManager!!.previousDate() }
         nextDateButton.setOnClickListener { tasksManager!!.nextDate() }
-
-        // Configura el botón para mostrar el DatePickerDialog
-        selectDateButton.setOnClickListener {
-            val datePickerDialog = DatePickerDialog(
-                this,
-                { _, year, monthOfYear, dayOfMonth ->
-                    // Crea una instancia de Calendar con la fecha seleccionada
-                    calendar.set(year, monthOfYear, dayOfMonth)
-
-                    // Obtén el objeto Date a partir del Calendar
-                    val selectedDate: Date = calendar.time
-
-                    // Pasa el objeto Date a tu método
-                    tasksManager!!.setDate(selectedDate)
-                }, year, month, day
-            )
-            datePickerDialog.show()
-        }
+        selectDateButton.setOnClickListener { tasksManager!!.showDatePickerDialog(this@MainActivity) }
 
         // TODO: move all timer button logic to TimerManager
         superButton.setOnClickListener {
@@ -195,20 +171,18 @@ class MainActivity : AppCompatActivity() {
             return false
         }
 
-    companion object {
-        fun formatTime(millis: Long): String {
-            val seconds = (millis / 1000) % 60 // Convertir a segundos y obtener el residuo de 60
-            val minutes =
-                (millis / (1000 * 60)) % 60 // Convertir a minutos y obtener el residuo de 60
-            val hours = millis / (1000 * 60 * 60) // Convertir a horas
+    fun formatTime(millis: Long): String {
+        val seconds = (millis / 1000) % 60 // Convertir a segundos y obtener el residuo de 60
+        val minutes =
+            (millis / (1000 * 60)) % 60 // Convertir a minutos y obtener el residuo de 60
+        val hours = millis / (1000 * 60 * 60) // Convertir a horas
 
-            return String.format(
-                Locale.US,
-                "%02d:%02d:%02d",
-                hours,
-                minutes,
-                seconds
-            ) // Formato HH:MM:SS
-        }
+        return String.format(
+            Locale.US,
+            "%02d:%02d:%02d",
+            hours,
+            minutes,
+            seconds
+        ) // Formato HH:MM:SS
     }
 }

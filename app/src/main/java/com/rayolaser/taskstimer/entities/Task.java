@@ -1,5 +1,6 @@
 package com.rayolaser.taskstimer.entities;
 
+/** @noinspection unused*/
 public class Task {
     private int idTask;
     private String taskName;

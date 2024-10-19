@@ -1,7 +1,8 @@
-package com.rayolaser.taskstimer
+package com.rayolaser.taskstimer.tasksmanager
 
 import com.rayolaser.taskstimer.entities.Task
 import android.app.AlertDialog
+import android.app.DatePickerDialog
 import android.content.Context
 import android.content.DialogInterface
 import android.util.Log
@@ -114,10 +115,32 @@ class TasksListManager(
         setDate(listDate)
     }
 
-    fun setDate(date: Date) {
+    private fun setDate(date: Date) {
         listDate = date
         val nextDate = listDate
         updateDateTextView(nextDate)
         loadTasks(nextDate)
+    }
+
+    fun showDatePickerDialog(context: Context) {
+        // Obtén la fecha actual
+        val calendar: Calendar = Calendar.getInstance()
+        val yearVal = calendar.get(Calendar.YEAR)
+        val month = calendar.get(Calendar.MONTH)
+        val day = calendar.get(Calendar.DAY_OF_MONTH)
+        val datePickerDialog = DatePickerDialog(
+            context,
+            { _, year, monthOfYear, dayOfMonth ->
+                // Crea una instancia de Calendar con la fecha seleccionada
+                calendar.set(year, monthOfYear, dayOfMonth)
+
+                // Obtén el objeto Date a partir del Calendar
+                val selectedDate: Date = calendar.time
+
+                // Pasa el objeto Date a tu método
+                setDate(selectedDate)
+            }, yearVal, month, day
+        )
+        datePickerDialog.show()
     }
 }
